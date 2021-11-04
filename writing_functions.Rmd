@@ -1,0 +1,150 @@
+---
+title: "writing_functions"
+author: "Tara Ahi"
+date: "11/4/2021"
+output: html_document
+---
+
+```{r}
+library(tidyverse)
+library(rvest)
+```
+
+
+## Z Scores
+
+```{r}
+x_vec = rnorm(25, mean = 5, sd = 3)
+
+(x_vec - mean(x_vec)) / sd(x_vec)
+```
+
+
+Give me some factor that will return the z score of the number I give
+
+```{r}
+z_scores = function(x) {
+  
+  z = (x - mean(x)) / sd(x)
+  z
+  
+}
+
+z_scores(x_vec)
+
+y_vec = rnorm(40, mean = 12, sd = .3)
+
+z_scores(x = y_vec)
+```
+
+
+How cool is this?
+
+```{r, error=TRUE}
+z_scores(3)
+
+z_scores(c("my name is jeff"))
+
+z_scores(mtcars)
+
+```
+
+These don't work, let's try again. Conditional execution:
+
+```{r}
+z_scores = function(x) {
+  
+  if (!is.numeric(x)) {
+    stop("x should be numeric")
+  } else if (length(x) == 1) {
+    stop("Z scores cannot be computed for length 1 vectors")
+  }
+  
+  z = mean(x) / sd(x)
+  
+  return(z)
+}
+```
+
+Now check error messages
+
+```{r, error=TRUE}
+z_scores(3)
+
+z_scores(c("my name is jeff"))
+
+z_scores(mtcars)
+
+```
+
+
+
+```{r, error=TRUE}
+mean_and_sd = function(x) {
+  
+  if (!is.numeric(x)) {
+    stop("Argument x should be numeric")
+  } else if (length(x) == 1) {
+    stop("Cannot be computed for length 1 vectors")
+  }
+  
+  mean_x = mean(x)
+  sd_x = sd(x)
+
+  list(mean = mean_x, 
+       sd = sd_x)
+}
+
+output_df = 
+  tibble(
+    mean = mean_x,
+    sd = sd_x
+  )
+
+return(output_df)
+
+mean_and_sd(x_vec)
+mean_and_sd(y_vec)
+```
+
+x doesn't exist yet so you can go to the console and say `x = y_vec`
+
+## Different sample sizes, means, sds
+
+```{r}
+sim_data = tibble(
+  x = rnorm(30, mean = 2, sd = 3)
+)
+
+sim_data %>% 
+  summarize(
+    mu_hat = mean(x),
+    sigma_hat = sd(x)
+  )
+```
+
+
+Let's write a function that simulates data, computes the mean and sd. 
+
+```{r}
+sim_mean_sd = function(n, mu, sigma) {
+  
+  #do checks on inputs
+  
+  sim_data = tibble(
+  x = rnorm(30, mean = 2, sd = 3)
+)
+  
+  sim_data %>% 
+  summarize(
+    mu_hat = mean(x),
+    sigma_hat = sd(x)
+  )
+  
+  
+}
+
+sim_mean_sd(30, 4, 3)
+```
+
+
